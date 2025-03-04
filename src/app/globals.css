@@ -22,3 +22,103 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0;
+  }
+}
+
+@layer components {
+  .pixel-border-wrapper {
+    @apply relative p-1 bg-zinc-700;
+    image-rendering: pixelated;
+  }
+
+  .pixel-border {
+    @apply relative border-4 border-transparent bg-clip-padding;
+  }
+
+  .pixel-border::before {
+    content: "";
+    @apply absolute inset-[-4px];
+    background: linear-gradient(135deg, rgb(74 222 128) 0%, rgb(37 99 235) 100%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .pixel-border-inner {
+    @apply border-2 border-zinc-700;
+  }
+
+  .pixel-box {
+    @apply px-2 py-1 text-center font-bold text-zinc-900;
+    image-rendering: pixelated;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .pixel-text {
+    @apply drop-shadow-[2px_2px_#000];
+  }
+
+  .pixel-pattern {
+    @apply bg-zinc-900;
+    background-image: linear-gradient(rgba(24, 24, 27, 0.9), rgba(24, 24, 27, 0.9)),
+      linear-gradient(90deg, transparent 0%, transparent 50%, rgb(255 255 255 / 0.02) 50%, rgb(255 255 255 / 0.02) 100%),
+      linear-gradient(transparent 0%, transparent 50%, rgb(255 255 255 / 0.02) 50%, rgb(255 255 255 / 0.02) 100%);
+    background-size: 100% 100%, 4px 4px, 4px 4px;
+    image-rendering: pixelated;
+  }
+
+  /* New styles for form inputs */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: rgb(74 222 128);
+    -webkit-box-shadow: 0 0 0px 1000px rgb(39 39 42) inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  input::selection {
+    @apply bg-green-400/30 text-green-400;
+  }
+
+  .form-pixel {
+    @apply bg-zinc-800 border-2 border-green-400/50 text-green-400;
+  }
+}
+
+
+@keyframes spin-slow {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 0.2s linear infinite;
+}
