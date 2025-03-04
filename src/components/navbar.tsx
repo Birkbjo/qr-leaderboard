@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { LogOut, Trophy } from "lucide-react"
-// import { getSession } from "@/app/lib/auth"
+import { getSession } from "@/lib/auth"
 // import { logout } from "@/app/lib/actions"
 
 export async function Navbar() {

@@ -2,6 +2,7 @@ import 'server-only'
 import { cookies } from "next/headers";
 import { jwtVerify, SignJWT } from "jose";
 import { nanoid } from "nanoid";
+import { Database } from './supabase/supabase';
 
 const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || "default_secret_change_this_in_production"
@@ -10,7 +11,7 @@ const JWT_SECRET = new TextEncoder().encode(
 type SessionData = {
     id: string;
     username?: string;
-    teamId: string;
+    teamId: Database['public']['Tables']['team']['Row']['id'];
     isAdmin?: boolean;
 };
 
@@ -47,15 +48,14 @@ export async function getSession() {
     }
 }
 
-export async function createSession(teamId: string) {
+export async function createSession(teamId: string, isAdmin: boolean = false) {
     const cookieStore = await cookies();
-    // Create a session token for the team
     const sessionToken = await signJwtToken({
         id: nanoid(),
         teamId: teamId,
+        isAdmin,
     });
 
-    // Set the session cookie
     cookieStore.set({
         name: "session",
         value: sessionToken,

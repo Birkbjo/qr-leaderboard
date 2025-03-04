@@ -15,33 +15,56 @@ import {
     DialogTrigger,
 } from "@radix-ui/react-dialog";
 import { DialogHeader } from "@/components/ui/dialog";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function TeamPage() {
     const session = await getSession();
+    const supabase = await createClient();
+    console.log('team page')
     if (!session || !session.teamId) {
+        console.log('redirect to home')
         redirect("/");
     }
-    const team = db.getTeamById(session.teamId);
+    const { data: team } = await supabase
+        .from("team")
+        .select("*")
+        .eq("id", session.teamId)
+        .single();
 
     if (!team) {
+        console.log('redirect to home x2')
         redirect("/");
     }
 
-    const activities = db.getTeamActivities(team.id);
+    const activitiesSupabase = await supabase
+        .from("activity_view")
+        .select(
+            `*`
+        )
+        .or(`team.eq.${team.id},team_opponent.eq.${team.id}`);
+    const activities = activitiesSupabase.data;
+
+    const getPoints = () => {
+        return (
+            activities
+                ?.filter((a) => a.team === team.id)
+                .reduce(
+                    (acc, curr) => acc + (curr?.points || 0),
+                    0
+                ) ?? 0
+        );
+    };
     return (
         <div className="container mx-auto py-10">
             <h1 className="text-4xl font-bold mb-8 text-center">{team.name}</h1>
 
             <Card className="max-w-md mx-auto">
-                <CardHeader>
-                    <CardTitle>Team Stats</CardTitle>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="p-4">
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <span className="font-medium">Total Points:</span>
                             <span className="text-2xl font-bold">
-                                <AnimatedPoints points={db.getPoints(team.id)} />
+                                <AnimatedPoints points={getPoints()} />
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
@@ -51,15 +74,15 @@ export default async function TeamPage() {
                                     <DialogTrigger asChild>
                                         <QRCodeIcon />
                                     </DialogTrigger>
-                                    <DialogOverlay/>
-                                        <DialogContent>
-                                            <DialogHeader>
-                                                <DialogTitle>
-                                                    Team QR Code
-                                                </DialogTitle>
-                                            </DialogHeader>
-                                            <QRCode url = {`/team/${team.id}`} />
-                                        </DialogContent>
+                                    <DialogOverlay />
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>
+                                                Team QR Code
+                                            </DialogTitle>
+                                        </DialogHeader>
+                                        <QRCode url={`/team/${team.id}`} />
+                                    </DialogContent>
                                 </Dialog>
                             </span>
                         </div>
@@ -78,17 +101,17 @@ export default async function TeamPage() {
                                             {/* <span className="text-muted-foreground">
                                             </span> */}
                                             <span className="ml-2">
-                                                {activity.challenge.title}
+                                                {activity?.title}
                                             </span>
-                                            <span className="ml-2 font-medium">
-                                                +{activity.challenge.points}{" "}
+                                            {activity.team === team.id && <span className="ml-2 font-medium">
+                                                +{activity?.points}{" "}
                                                 points
-                                            </span>
+                                            </span>}
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="pl-2 text-sm text-muted-foreground">
                                     No recent activity
                                 </p>
                             )}

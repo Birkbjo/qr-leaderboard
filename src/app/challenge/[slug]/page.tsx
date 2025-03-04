@@ -1,47 +1,28 @@
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { getTeamById } from "@/lib/teams"
 import { getSession } from "@/lib/auth";
-import db from "@/lib/db";
-import Leaderboard from "@/app/leaderboard/Leaderboard";
-import { QrCode as QRCodeIcon } from "lucide-react";
-import { QRCode } from "@/components/QRCode";
 import { AnimatedPoints } from "@/components/AnimatedPoints";
-import {
-    Dialog,
-    DialogContent,
-    DialogOverlay,
-    DialogTitle,
-    DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { DialogHeader } from "@/components/ui/dialog";
-import { challenges } from "@/lib/challenges";
 import { NextPageProps } from "@/lib/types";
-import { Message } from "@/components/ui/message";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function ChallengePage({ params }: NextPageProps) {
     const session = await getSession();
+    const supabase = await createClient();
     const { slug } = await params;
     if (!session || !session.teamId) {
         redirect("/");
     }
-    const team = db.getTeamById(session.teamId);
-    const challenge = challenges.find((challenge) => challenge.id === slug);
-    if (!team || !team.activated || !challenge) {
-        redirect("/");
+    const { data: team } = await supabase.from('team').select('*').eq('id', session.teamId).single();
+    const { data: challenge } = await supabase.from('challenge').select('*').eq('id', slug).single();
+    if (!team || !challenge) {
+        redirect("/team");
     }
 
-    const activities = db.getTeamActivities(team.id);
-    // if (activities.find((activity) => activity.challenge.id === slug)) {
-    //     setTimeout(() => redirect(`/team/${team.id}`), 2000);
-
-    //     return <Message>You have already completed this challenge!</Message>;
-    // }
-
-    db.addActivity({
-        team: team,
-        challenge: challenge,
+    await supabase.from('activity').insert({
+        team: team.id,
+        challenge: challenge.id,
     })
+
     return (
         <div className="container mx-auto py-10 flex flex-col items-center justify-center">
             <div>
