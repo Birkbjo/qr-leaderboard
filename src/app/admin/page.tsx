@@ -48,7 +48,7 @@ export default async function AdminPage() {
                                 </CardHeader>
                                 <CardContent className="p-4 mt-4">
                                     <div className="flex flex-col items-center space-y-4">
-                                        <QRCode url={`/team/${challenge.id}/activate`} />
+                                        <QRCode url={`/team/${challenge.id}`} />
                                     </div>
                                 </CardContent>
                             </div>
