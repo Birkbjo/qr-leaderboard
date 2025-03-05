@@ -87,6 +87,8 @@ export type Database = {
           points: number
           title: string | null
           versus: boolean | null
+          completion_text: string | null
+          is_unique: boolean | null
         }
         Insert: {
           created_at?: string
