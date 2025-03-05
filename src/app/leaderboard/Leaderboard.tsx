@@ -7,7 +7,6 @@ export default async function Home() {
 
     const { data: teams, error } = await supabase.from("leaderboard").select("*");
 
-    console.log(teams, { error});
     return (
         <div className="container mx-auto py-10 px-4">
             {/* <Refresh /> */}
