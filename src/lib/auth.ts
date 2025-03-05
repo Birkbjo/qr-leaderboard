@@ -67,3 +67,8 @@ export async function createSession(teamId: string, isAdmin: boolean = false) {
 
     return { success: true, teamId };
 }
+
+export async function deleteSession() {
+    const cookieStore = await cookies();
+    return cookieStore.delete("session");
+}
