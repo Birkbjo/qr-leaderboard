@@ -1,11 +1,57 @@
-import { Refresh } from "./Refresh";
+"use client";
+import { supabaseBrowserClient } from "@/lib/supabase/client";
 import { AnimatedPoints } from "@/components/AnimatedPoints";
-import { createClient } from "@/lib/supabase/server";
+import { use, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function Home() {
-    const supabase = await createClient();
+type LeaderboardProps = {
+    teamsPromise: Promise<
+        | {
+              name: string | null;
+              points: number | null;
+          }[]
+        | null
+    >;
+};
 
-    const { data: teams, error } = await supabase.from("leaderboard").select("*");
+export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
+    const lastRefresh = useRef(0);
+    const teams = use(teamsPromise);
+    const router = useRouter();
+    const refresh = router.refresh;
+
+    useEffect(() => {
+        const throttledRefresh = () => {
+            if (Date.now() - lastRefresh.current > 500) {
+                lastRefresh.current = Date.now();
+                refresh();
+            }
+        }
+        const channel = supabaseBrowserClient
+            .channel("supabase_realtime")
+            .on(
+                "postgres_changes",
+                { event: "*", schema: "public", },
+                (payload) => {
+                    console.log(payload);
+                    throttledRefresh()
+                }
+            );
+        channel.subscribe();
+        return () => {
+            channel.unsubscribe();
+        };
+    }, [refresh]);
+
+    // Refresh the leaderboard every 30 seconds, incase realtime doesnt work
+    useEffect(() => {
+        setInterval(() => {
+            if (Date.now() - lastRefresh.current > 10000) {
+                lastRefresh.current = Date.now();
+                // refresh();
+            }
+        }, 5000);
+    }, [refresh]);
 
     return (
         <div className="container mx-auto py-10 px-4">
@@ -15,7 +61,7 @@ export default async function Home() {
                     LEADERBOARD
                 </h1>
                 <p className="text-xs md:text-sm text-green-400 max-w-2xl mx-auto leading-relaxed">
-                    Birk og Bendiks 61 års-challenges.
+                    Bendik og Birks 61 års-challenges.
                 </p>
             </div>
 

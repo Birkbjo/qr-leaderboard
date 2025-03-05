@@ -10,7 +10,7 @@ import {
 import { getSession } from "@/lib/auth";
 import db from "@/lib/db";
 import { NextPageProps } from "@/lib/types";
-import Leaderboard from "@/app/leaderboard/Leaderboard";
+import Leaderboard from "@/app/leaderboard/LeaderboardServer";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function TeamPage({ params }: NextPageProps) {

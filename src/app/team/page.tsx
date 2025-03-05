@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { getTeamById } from "@/lib/teams"
 import { getSession } from "@/lib/auth";
 import db from "@/lib/db";
-import Leaderboard from "@/app/leaderboard/Leaderboard";
+import Leaderboard from "@/app/leaderboard/LeaderboardServer";
 import { QrCode as QRCodeIcon } from "lucide-react";
 import { QRCode } from "@/components/QRCode";
 import { AnimatedPoints } from "@/components/AnimatedPoints";

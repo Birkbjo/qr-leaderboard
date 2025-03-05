@@ -1,8 +1,7 @@
 import Image from "next/image";
-import Leaderboard from './leaderboard/Leaderboard'
+import Leaderboard from './leaderboard/LeaderboardServer'
 
-const dynamic = 'force-dynamic'
-
+export const revalidate = 10;
 export default function Home() {
   return <Leaderboard />;
 }

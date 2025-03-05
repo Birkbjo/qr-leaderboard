@@ -12,7 +12,8 @@ export async function GET(request: NextRequest, nextPageProps: NextPageProps) {
     const supabase = await createClient();
     const { slug } = await nextPageProps.params;
     const loggedIn = await getSession();
-    if (loggedIn?.teamId) {
+
+    if (loggedIn?.teamId ) {
         redirect(`/team`);
     }
 
