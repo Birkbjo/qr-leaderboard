@@ -12,16 +12,18 @@ const getUrl = (url: string) => {
     if (url.includes("http")) {
         return url;
     }
-    console.log({url})
-    console.log(window.location.origin)
-    return `${window.location.origin}${url}`;
+    if(window?.location?.origin) {
+        return `${window.location.origin}${url}`;
+
+    }
+    return url
 };
 
 export const QRCode = ({ url }: QRCodeProps) => {
     const [qrCode, setQrCode] = useState<QRCodeStyling>(() => {
         return new QRCodeStyling({
-            width: 300,
-            height: 300,
+            width: 250,
+            height: 250,
             type: 'canvas',
             dotsOptions: {
                 // color: "#1ee277",

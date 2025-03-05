@@ -122,3 +122,9 @@ body {
 .animate-spin-slow {
   animation: spin-slow 0.2s linear infinite;
 }
+
+@media print {
+  div {
+    break-inside: avoid;
+  }
+}
