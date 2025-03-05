@@ -28,7 +28,7 @@ export default async function AdminPage() {
                                 </CardHeader>
                                 <CardContent className="p-4 mt-4">
                                     <div className="flex flex-col items-center space-y-4">
-                                        <QRCode url={`/team/${team.id}`} />
+                                        <QRCode url={`/team/${team.id}/activate`} />
                                         <p className="text-xs text-green-400 pixel-text">
                                             Scan to join team
                                         </p>
