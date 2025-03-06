@@ -82,24 +82,31 @@ export type Database = {
       }
       challenge: {
         Row: {
+          completion_text: string | null
           created_at: string
           id: string
+          index: number
+          is_unique: boolean | null
           points: number
           title: string | null
           versus: boolean | null
-          completion_text: string | null
-          is_unique: boolean | null
         }
         Insert: {
+          completion_text?: string | null
           created_at?: string
           id?: string
+          index?: number
+          is_unique?: boolean | null
           points?: number
           title?: string | null
           versus?: boolean | null
         }
         Update: {
+          completion_text?: string | null
           created_at?: string
           id?: string
+          index?: number
+          is_unique?: boolean | null
           points?: number
           title?: string | null
           versus?: boolean | null
@@ -110,22 +117,42 @@ export type Database = {
         Row: {
           activated: boolean | null
           created_at: string
+          given_name: string | null
           id: string
+          index: number
+          is_admin: boolean | null
           name: string | null
+          next_challenge: string | null
         }
         Insert: {
           activated?: boolean | null
           created_at?: string
+          given_name?: string | null
           id?: string
+          index?: number
+          is_admin?: boolean | null
           name?: string | null
+          next_challenge?: string | null
         }
         Update: {
           activated?: boolean | null
           created_at?: string
+          given_name?: string | null
           id?: string
+          index?: number
+          is_admin?: boolean | null
           name?: string | null
+          next_challenge?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "team_next_challenge_fkey"
+            columns: ["next_challenge"]
+            isOneToOne: false
+            referencedRelation: "challenge"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

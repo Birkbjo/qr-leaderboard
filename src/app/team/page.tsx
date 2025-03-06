@@ -27,7 +27,7 @@ export default async function TeamPage() {
     }
     const { data: team } = await supabase
         .from("team")
-        .select("*")
+        .select("*, next_challenge(*)")
         .eq("id", session.teamId)
         .single();
 
@@ -58,17 +58,23 @@ export default async function TeamPage() {
         <div className="container mx-auto py-10">
             <h1 className="text-4xl font-bold mb-8 text-center">{team.name}</h1>
 
-            <Card className="max-w-md mx-auto">
+            <Card className="max-w-xl mx-auto">
                 <CardContent className="p-4">
                     <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                            <span className="font-medium">Neste post:</span>
+                            <span className="text-2xl font-bold">
+                              {team.next_challenge?.title}
+                            </span>
+                        </div>
                         <div className="flex justify-between items-center">
-                            <span className="font-medium">Total Points:</span>
+                            <span className="font-medium">Poeng:</span>
                             <span className="text-2xl font-bold">
                                 <AnimatedPoints points={getPoints()} />
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="font-medium">QR-Code:</span>
+                            <span className="font-medium">QR-Kode:</span>
                             <span className="text-2xl font-bold">
                                 <Dialog>
                                     <DialogTrigger asChild>
@@ -78,7 +84,6 @@ export default async function TeamPage() {
                                     <DialogContent>
                                         <DialogHeader>
                                             <DialogTitle>
-                                                Team QR Code
                                             </DialogTitle>
                                         </DialogHeader>
                                         <QRCode url={`/team/${team.id}`} />
@@ -89,7 +94,7 @@ export default async function TeamPage() {
 
                         <div className="border-t pt-4">
                             <h3 className="font-medium mb-2">
-                                Recent Activity
+                                Siste aktivitet
                             </h3>
                             {activities && activities.length > 0 ? (
                                 <ul className="space-y-2">
@@ -105,14 +110,14 @@ export default async function TeamPage() {
                                             </span>
                                             {activity.team === team.id && <span className="ml-2 font-medium">
                                                 +{activity?.points}{" "}
-                                                points
+                                                poeng
                                             </span>}
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
                                 <p className="pl-2 text-sm text-muted-foreground">
-                                    No recent activity
+                                    Ingen aktiviteter enda.
                                 </p>
                             )}
                         </div>

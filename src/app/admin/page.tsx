@@ -18,18 +18,18 @@ export default async function AdminPage() {
         <div className="container mx-auto py-10">
             <h1 className="text-4xl font-bold mb-8 text-center print:hidden">Teams</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 print:grid-cols-2 print:gap-8">
-                {teams?.map((team) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 print:grid-cols-2 print:gap-4">
+                {teams?.filter(t => !t.is_admin).map((team) => (
                     <Card key={team.id} className="pixel-border-wrapper h-auto min-h-100">
                             <div className="bg-[#2a2a2a] pixel-border-inner p-4 h-full">
                                 <CardHeader className="p-0">
-                                    <CardTitle className="text-xl text-center text-green-400 pixel-text">
+                                    <CardTitle className="text-xl text-center text-green-400 pixel-text break-words hyphens-auto">
                                         {team.name}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-4 mt-4">
                                     <div className="flex flex-col items-center space-y-4">
-                                        <QRCode url={`/team/${team.id}/activate`} />
+                                        <QRCode url={`/team/${team.id}`} />
                                     </div>
                                 </CardContent>
                             </div>
@@ -38,7 +38,7 @@ export default async function AdminPage() {
             </div>
             <h1 className="text-4xl font-bold p-8 text-center print:hidden">Challenges</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 print:grid-cols-2 print:gap-8 print:mt-20" >
-                {challenges?.map((challenge) => (
+                {challenges?.filter(c => !c.versus).map((challenge) => (
                     <Card key={challenge.id} className="pixel-border-wrapper">
                             <div className="bg-[#2a2a2a] pixel-border-inner p-4">
                                 <CardHeader className="p-0">

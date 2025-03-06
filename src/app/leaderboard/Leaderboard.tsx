@@ -52,7 +52,7 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
             }
         }, 5000);
     }, [refresh]);
-
+    console.log({teams})
     return (
         <div className="container mx-auto py-10 px-4">
             {/* <Refresh /> */}
@@ -71,20 +71,20 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
                         <div className="bg-[#2a2a2a] pixel-border-inner p-2">
                             <div className="flex justify-between items-center text-xs md:text-sm px-4 py-2">
                                 <div className="w-16 text-center text-yellow-400">
-                                    RANK
+                                    Plass
                                 </div>
                                 <div className="flex-1 text-center text-yellow-400">
-                                    TEAM
+                                    Lag
                                 </div>
                                 <div className="w-24 text-center text-yellow-400">
-                                    POINTS
+                                    Poeng
                                 </div>
                             </div>
                         </div>
 
                         {teams?.length === 0 ? (
                             <div className="py-8 text-center text-green-400 text-xs md:text-sm pixel-text">
-                                NO TEAMS HAVE JOINED YET
+                                Ingen lag har blitt med enda.
                             </div>
                         ) : (
                             <ul className="divide-y divide-[#2a2a2a]">
@@ -138,7 +138,7 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
 
                         <div className="bg-[#2a2a2a] pixel-border-inner p-4 mt-2">
                             <p className="text-[10px] md:text-xs text-center text-green-400 pixel-text">
-                                Scan QR code to join the challenge!
+                                Scan QR-koden til ditt lag for å bli med!
                             </p>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { AnimatedPoints } from "@/components/AnimatedPoints";
 import { NextPageProps } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
+import { MessageRedirect } from "@/components/MessageRedirect";
 
 export default async function ChallengePage({ params }: NextPageProps) {
     const session = await getSession();
@@ -39,7 +40,7 @@ export default async function ChallengePage({ params }: NextPageProps) {
     const [{ data: team }, { data: challenge }, { data: identicalActivites }] =
         await getData();
 
-    if (!team || !challenge) {
+    if (!team || !challenge || challenge.versus) {
         redirect("/team");
     }
 
@@ -64,7 +65,7 @@ export default async function ChallengePage({ params }: NextPageProps) {
                 <h2 className="text-2xl font-bold mb-8 text-center">
                     {challenge.title}
                 </h2>
-                <p>{message}</p>
+                <MessageRedirect message={message} />
                 {!alreadyCompleted && (
                     <div className="flex items-center justify-center">
                         <h2 className="text-2xl font-bold mb-8 text-center">

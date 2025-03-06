@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, nextPageProps: NextPageProps) {
     if (!team) {
         return redirect("/");
     }
-    const isAdmin = team.name === "Admin";
+    const isAdmin = team.is_admin || false
     await createSession(team.id, isAdmin);
 
     if (!team.activated && !isAdmin) {

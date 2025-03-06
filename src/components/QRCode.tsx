@@ -20,11 +20,15 @@ const getUrl = (url: string) => {
 };
 
 export const QRCode = ({ url }: QRCodeProps) => {
-    const [qrCode, setQrCode] = useState<QRCodeStyling>(() => {
+    const [qrCode, setQrCode] = useState<QRCodeStyling | null>(() => {
+        if(typeof window === "undefined") {
+            return null;
+        }
         return new QRCodeStyling({
             width: 250,
             height: 250,
             type: 'canvas',
+            data: getUrl(url),
             dotsOptions: {
                 // color: "#1ee277",
                 type: "rounded",
@@ -33,6 +37,9 @@ export const QRCode = ({ url }: QRCodeProps) => {
     });
     const qrCodeDivRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
+        if(!qrCode) {
+            return;
+        }
         qrCode.update({
             data: getUrl(url),
         });
