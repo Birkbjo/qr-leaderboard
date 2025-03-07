@@ -45,14 +45,14 @@ export default async function ChallengePage({ params }: NextPageProps) {
     }
 
     let message = challenge.is_unique && identicalActivites?.every(a => a.team !== session.teamId)
-        ? `You found a bonus code! Unfortunately, this code has already been found...`
-        : `You have already completed this challenge!`;
+        ? `Du fant en bonus-kode! Men denne er dessverre allerede funnet av noen andre...`
+        : `Dere har allerede gjort denne oppgaven!`;
 
     const alreadyCompleted =
         identicalActivites && identicalActivites.length > 0;
     if (!alreadyCompleted) {
         message =
-            challenge.completion_text ?? `You have completed this challenge!`;
+            challenge.completion_text ?? `Gratulerer, dere klarte det!`;
         await supabase.from("activity").insert({
             team: team.id,
             challenge: challenge.id,
