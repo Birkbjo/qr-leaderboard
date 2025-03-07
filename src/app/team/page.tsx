@@ -50,7 +50,7 @@ export default async function TeamPage() {
     };
     const canChangeName = !team.given_name || team.given_name === team.name;
     return (
-        <div className="container mx-auto py-10">
+        <div className="container mx-auto">
             {canChangeName ? (
                 <EditableTeamName
                     initialName={team.given_name ?? team.name!}
