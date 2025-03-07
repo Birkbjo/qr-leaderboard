@@ -36,8 +36,7 @@ export default async function VersusPage({ params }: NextPageProps) {
     const supabase = await createClient();
     console.log("after supabase");
     console.log("after session");
-    if (!session || param.slug === session.teamId) {
-        console.log("No session or slug is session.teamId - redirecting to /");
+    if (!session) {
         redirect("/");
     }
 
