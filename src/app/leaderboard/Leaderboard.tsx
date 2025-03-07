@@ -26,15 +26,15 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
                 lastRefresh.current = Date.now();
                 refresh();
             }
-        }
+        };
         const channel = supabaseBrowserClient
             .channel("supabase_realtime")
             .on(
                 "postgres_changes",
-                { event: "*", schema: "public", },
+                { event: "*", schema: "public" },
                 (payload) => {
                     console.log(payload);
-                    throttledRefresh()
+                    throttledRefresh();
                 }
             );
         channel.subscribe();
@@ -52,7 +52,7 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
             }
         }, 5000);
     }, [refresh]);
-    console.log({teams})
+    console.log({ teams });
     return (
         <div className="container mx-auto py-10 px-4">
             {/* <Refresh /> */}

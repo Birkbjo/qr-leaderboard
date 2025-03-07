@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { getTeamById } from "@/lib/teams"
+import { Card, CardContent } from "@/components/ui/card";
 import { getSession } from "@/lib/auth";
-import db from "@/lib/db";
 import Leaderboard from "@/app/leaderboard/LeaderboardServer";
 import { QrCode as QRCodeIcon } from "lucide-react";
 import { QRCode } from "@/components/QRCode";
@@ -16,13 +14,14 @@ import {
 } from "@radix-ui/react-dialog";
 import { DialogHeader } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/server";
+import { EditableTeamName } from "@/components/EditableTeamName";
 
 export default async function TeamPage() {
     const session = await getSession();
     const supabase = await createClient();
-    console.log('team page')
+    console.log("team page");
     if (!session || !session.teamId) {
-        console.log('redirect to home')
+        console.log("redirect to home");
         redirect("/");
     }
     const { data: team } = await supabase
@@ -32,15 +31,13 @@ export default async function TeamPage() {
         .single();
 
     if (!team) {
-        console.log('redirect to home x2')
+        console.log("redirect to home x2");
         redirect("/");
     }
 
     const activitiesSupabase = await supabase
         .from("activity_view")
-        .select(
-            `*`
-        )
+        .select(`*`)
         .or(`team.eq.${team.id},team_opponent.eq.${team.id}`);
     const activities = activitiesSupabase.data;
 
@@ -48,23 +45,30 @@ export default async function TeamPage() {
         return (
             activities
                 ?.filter((a) => a.team === team.id)
-                .reduce(
-                    (acc, curr) => acc + (curr?.points || 0),
-                    0
-                ) ?? 0
+                .reduce((acc, curr) => acc + (curr?.points || 0), 0) ?? 0
         );
     };
+    const canChangeName = !team.given_name || team.given_name === team.name;
     return (
         <div className="container mx-auto py-10">
-            <h1 className="text-4xl font-bold mb-8 text-center">{team.name}</h1>
+            {canChangeName ? (
+                <EditableTeamName
+                    initialName={team.given_name ?? team.name!}
+                    teamId={team.id}
+                />
+            ) : (
+                <h1 className="text-4xl font-bold pb-4 text-center">
+                    {team.given_name ?? team.name}
+                </h1>
+            )}
 
             <Card className="max-w-xl mx-auto">
                 <CardContent className="p-4">
                     <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center">
                             <span className="font-medium">Neste post:</span>
                             <span className="text-2xl font-bold">
-                              {team.next_challenge?.title}
+                                {team.next_challenge?.title}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
@@ -83,8 +87,7 @@ export default async function TeamPage() {
                                     <DialogOverlay />
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>
-                                            </DialogTitle>
+                                            <DialogTitle></DialogTitle>
                                         </DialogHeader>
                                         <QRCode url={`/team/${team.id}`} />
                                     </DialogContent>
@@ -103,15 +106,14 @@ export default async function TeamPage() {
                                             key={activity.id}
                                             className="text-sm"
                                         >
-                                            {/* <span className="text-muted-foreground">
-                                            </span> */}
                                             <span className="ml-2">
                                                 {activity?.title}
                                             </span>
-                                            {activity.team === team.id && <span className="ml-2 font-medium">
-                                                +{activity?.points}{" "}
-                                                poeng
-                                            </span>}
+                                            {activity.team === team.id && (
+                                                <span className="ml-2 font-medium">
+                                                    +{activity?.points} poeng
+                                                </span>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
