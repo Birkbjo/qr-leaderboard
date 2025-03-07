@@ -54,7 +54,7 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
     }, [refresh]);
     console.log({ teams });
     return (
-        <div className="container mx-auto py-10 px-4">
+        <div className="container mx-auto py-10">
             {/* <Refresh /> */}
             <div className="text-center mb-10 space-y-4">
                 <h1 className="text-2xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-green-400 to-purple-500 animate-gradient">

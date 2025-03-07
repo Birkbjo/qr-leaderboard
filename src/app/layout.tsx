@@ -33,7 +33,7 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.className} antialiased`}
             >
-                <div className="min-h-screen bg-[#0f172a] text-white pixel-pattern p-8">
+                <div className="min-h-screen bg-[#0f172a] text-white pixel-pattern p-2">
                     {children}
                 </div>
             </body>
