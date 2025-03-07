@@ -61,7 +61,7 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
                     LEADERBOARD
                 </h1>
                 <p className="text-xs md:text-sm text-green-400 max-w-2xl mx-auto leading-relaxed">
-                    Bendik og Birks 61 års-challenges.
+                    Bendik og Birks 61 års-challenge
                 </p>
             </div>
 

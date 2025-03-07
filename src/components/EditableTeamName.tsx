@@ -16,12 +16,12 @@ export function EditableTeamName({ initialName }: EditableTeamNameProps) {
     const [optimisticName, setOptimisticName] = useOptimistic<string, string>(
         initialName,
         (prevName, newName) => {
-            return newName
+            return newName;
         }
     );
     const { pending } = useFormStatus();
 
-    console.log({ pending, optimisticName});
+    console.log({ pending, optimisticName });
     const handleCancel = () => {
         setIsEditing(false);
     };
@@ -45,7 +45,7 @@ export function EditableTeamName({ initialName }: EditableTeamNameProps) {
                     <Input
                         placeholder={optimisticName}
                         name="name"
-                        className="text-4xl font-bold text-center bg-transparent border-green-400/50"
+                        className="text-center bg-transparent border-green-400/50"
                     />
                     <button
                         type="submit"

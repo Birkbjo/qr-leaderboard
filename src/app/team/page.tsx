@@ -126,7 +126,6 @@ export default async function TeamPage() {
                     </div>
                 </CardContent>
             </Card>
-            <Leaderboard />
         </div>
     );
 }
