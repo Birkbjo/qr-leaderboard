@@ -29,6 +29,7 @@ export const QRCode = ({ url }: QRCodeProps) => {
             height: 250,
             type: 'canvas',
             data: getUrl(url),
+            image: './logo.png',
             dotsOptions: {
                 // color: "#1ee277",
                 type: "rounded",
