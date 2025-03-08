@@ -6,6 +6,12 @@ import { NextPageProps } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
 import { MessageRedirect } from "@/components/MessageRedirect";
 
+function wrapNumber(value: number, min: number, max: number) {
+    if (value < min) return max;
+    if (value > max) return min;
+    return value;
+}
+
 export default async function ChallengePage({ params }: NextPageProps) {
     const session = await getSession();
     const supabase = await createClient();
@@ -18,7 +24,7 @@ export default async function ChallengePage({ params }: NextPageProps) {
     const getData = async () => {
         const teamPromise = supabase
             .from("team")
-            .select("*")
+            .select("*, next_challenge(*)")
             .eq("id", session.teamId)
             .single();
         const challengePromise = await supabase
@@ -26,7 +32,10 @@ export default async function ChallengePage({ params }: NextPageProps) {
             .select("*")
             .eq("id", slug)
             .single();
-
+            const challenges = supabase
+            .from("challenge")
+            .select("*")
+            .order("index", { ascending: false, nullsFirst: false });
         let identicalActivites = supabase
             .from("activity")
             .select("*")
@@ -35,12 +44,12 @@ export default async function ChallengePage({ params }: NextPageProps) {
         if (!challengePromise.data?.is_unique) {
             identicalActivites = identicalActivites.eq("team", session.teamId);
         }
-        return Promise.all([teamPromise, challengePromise, identicalActivites]);
+        return Promise.all([teamPromise, challengePromise, identicalActivites, challenges]);
     };
-    const [{ data: team }, { data: challenge }, { data: identicalActivites }] =
+    const [{ data: team }, { data: challenge }, { data: identicalActivites }, { data: challenges }] =
         await getData();
 
-    if (!team || !challenge || challenge.versus) {
+    if (!team || !challenge || challenge.versus || !challenges) {
         redirect("/team");
     }
 
@@ -58,7 +67,38 @@ export default async function ChallengePage({ params }: NextPageProps) {
             challenge: challenge.id,
         });
     }
+    const maxChallengeIndex = challenges[0].index || 5;
+    const minChallenge = 1;
 
+    const currentChallenge = team?.next_challenge;
+    const updateNextChallenge = async (t: NonNullable<typeof team>) => {
+        const currChallengeIndex = t.next_challenge?.index ?? 1;
+        const nextChallengeIndex =
+            t.index % 2 === 0
+                ? wrapNumber(
+                      currChallengeIndex + 1,
+                      minChallenge,
+                      maxChallengeIndex
+                  )
+                : wrapNumber(
+                      currChallengeIndex - 1,
+                      minChallenge,
+                      maxChallengeIndex
+                  );
+
+        const nextChallenge =
+            challenges.find((c) => c.index === nextChallengeIndex)?.id ?? null;
+        await supabase
+            .from("team")
+            .update({
+                next_challenge: nextChallenge,
+            })
+            .eq("id", t.id);
+    };
+
+    await Promise.all([
+        updateNextChallenge(team),
+    ]);
     return (
         <div className="container mx-auto py-10 flex flex-col items-center justify-center">
             <div>
