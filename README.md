@@ -3,7 +3,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## QR-Leaderboard
 
-A simple app to scan QR-codes. Currently hosted on [https://birk.dev](birk.dev)
+A simple app for a party. Currently hosted on [birk.dev](https://birk.dev/)
+
 ## Getting Started
 
 First, run the development server:
