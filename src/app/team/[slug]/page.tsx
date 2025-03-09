@@ -1,20 +1,9 @@
 import { redirect } from "next/navigation";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 // import { getTeamById } from "@/lib/teams"
 import { getSession } from "@/lib/auth";
-import db from "@/lib/db";
 import { NextPageProps } from "@/lib/types";
-import Leaderboard from "@/app/leaderboard/LeaderboardServer";
 import { createClient } from "@/lib/supabase/server";
 import { MessageRedirect } from "@/components/MessageRedirect";
-
-const versusActivityId = "3d15fa91-6cfa-4abf-ace8-7c73adb7ccfc";
 
 const timeBetweenActivities = 5 * 60 * 1000;
 
@@ -25,17 +14,13 @@ function wrapNumber(value: number, min: number, max: number) {
 }
 export const dynamic = "force-dynamic";
 export default async function VersusPage({ params }: NextPageProps) {
-    console.log("VersusPage");
     const session = await getSession();
     const param = await params;
-    if(!session) {
+    if (!session) {
         redirect(`/team/${param.slug}/activate`);
     }
 
-    console.log("asfter param");
     const supabase = await createClient();
-    console.log("after supabase");
-    console.log("after session");
     if (!session) {
         redirect("/");
     }
@@ -67,7 +52,6 @@ export default async function VersusPage({ params }: NextPageProps) {
     const [{ data: opponent }, { data: currTeam }, { data: challenges }] =
         await getData();
     if (!opponent || !opponent.activated || !challenges || !currTeam) {
-        console.log({ opponent, challenges, currTeam });
         console.log("No opponent or challenges or currTeam");
         return (
             <MessageRedirect message="Fant ingen motstander, oppgaver eller lag. Er det riktig id for laget?" />
@@ -84,7 +68,6 @@ export default async function VersusPage({ params }: NextPageProps) {
         )
         .order("created_at", { ascending: false });
 
-
     if (lastActivities.data && lastActivities.data.length > 0) {
         return (
             <MessageRedirect
@@ -97,13 +80,12 @@ export default async function VersusPage({ params }: NextPageProps) {
     const maxChallengeIndex = challenges[0].index || 5;
     const minChallenge = 1;
 
-    const activityInsert = await supabase.from("activity").insert({
+    await supabase.from("activity").insert({
         team: currTeam.id,
         team_opponent: opponent.id,
         challenge: currTeam?.next_challenge?.id,
     });
 
-    console.log({ activityInsert });
     const currentChallenge = currTeam?.next_challenge;
     const updateNextChallenge = async (team: NonNullable<typeof currTeam>) => {
         const currChallengeIndex = team.next_challenge?.index ?? 1;
@@ -138,7 +120,9 @@ export default async function VersusPage({ params }: NextPageProps) {
     return (
         <div className="container mx-auto">
             <h1 className="text-4xl font-bold mb-8 text-center">
-                <MessageRedirect message={`Gratulerer, du har vunnet mot ${opponent.name} i ${currentChallenge?.title}!`} />
+                <MessageRedirect
+                    message={`Gratulerer, du har vunnet mot ${opponent.name} i ${currentChallenge?.title}!`}
+                />
             </h1>
         </div>
     );

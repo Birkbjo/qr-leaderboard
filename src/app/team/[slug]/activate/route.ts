@@ -1,6 +1,4 @@
 import { createSession, getSession } from "@/lib/auth";
-import { SIGNUP_CHALLENGE } from "@/lib/challenges";
-import db from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
 import { NextPageProps } from "@/lib/types";
 import { redirect } from "next/navigation";

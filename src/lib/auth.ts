@@ -36,7 +36,6 @@ export async function getSession() {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session");
 
-    console.log("session", sessionCookie);
     if (!sessionCookie?.value) {
         return null;
     }

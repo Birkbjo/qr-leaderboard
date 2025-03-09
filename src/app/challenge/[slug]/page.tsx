@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-// import { getTeamById } from "@/lib/teams"
 import { getSession } from "@/lib/auth";
 import { AnimatedPoints } from "@/components/AnimatedPoints";
 import { NextPageProps } from "@/lib/types";
@@ -32,7 +31,7 @@ export default async function ChallengePage({ params }: NextPageProps) {
             .select("*")
             .eq("id", slug)
             .single();
-            const challenges = supabase
+        const challenges = supabase
             .from("challenge")
             .select("*")
             .order("index", { ascending: false, nullsFirst: false });
@@ -44,24 +43,34 @@ export default async function ChallengePage({ params }: NextPageProps) {
         if (!challengePromise.data?.is_unique) {
             identicalActivites = identicalActivites.eq("team", session.teamId);
         }
-        return Promise.all([teamPromise, challengePromise, identicalActivites, challenges]);
+        return Promise.all([
+            teamPromise,
+            challengePromise,
+            identicalActivites,
+            challenges,
+        ]);
     };
-    const [{ data: team }, { data: challenge }, { data: identicalActivites }, { data: challenges }] =
-        await getData();
+    const [
+        { data: team },
+        { data: challenge },
+        { data: identicalActivites },
+        { data: challenges },
+    ] = await getData();
 
     if (!team || !challenge || challenge.versus || !challenges) {
         redirect("/team");
     }
 
-    let message = challenge.is_unique && identicalActivites?.every(a => a.team !== session.teamId)
-        ? `Du fant en bonus-kode! Men denne er dessverre allerede funnet av noen andre...`
-        : `Dere har allerede gjort denne oppgaven!`;
+    let message =
+        challenge.is_unique &&
+        identicalActivites?.every((a) => a.team !== session.teamId)
+            ? `Du fant en bonus-kode! Men denne er dessverre allerede funnet av noen andre...`
+            : `Dere har allerede gjort denne oppgaven!`;
 
     const alreadyCompleted =
         identicalActivites && identicalActivites.length > 0;
     if (!alreadyCompleted) {
-        message =
-            challenge.completion_text ?? `Gratulerer, dere klarte det!`;
+        message = challenge.completion_text ?? `Gratulerer, dere klarte det!`;
         await supabase.from("activity").insert({
             team: team.id,
             challenge: challenge.id,
@@ -70,7 +79,6 @@ export default async function ChallengePage({ params }: NextPageProps) {
     const maxChallengeIndex = challenges[0].index || 5;
     const minChallenge = 1;
 
-    const currentChallenge = team?.next_challenge;
     const updateNextChallenge = async (t: NonNullable<typeof team>) => {
         const currChallengeIndex = t.next_challenge?.index ?? 1;
         const nextChallengeIndex =
@@ -96,9 +104,7 @@ export default async function ChallengePage({ params }: NextPageProps) {
             .eq("id", t.id);
     };
 
-    await Promise.all([
-        updateNextChallenge(team),
-    ]);
+    await Promise.all([updateNextChallenge(team)]);
     return (
         <div className="container mx-auto py-10 flex flex-col items-center justify-center">
             <div>

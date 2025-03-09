@@ -5,7 +5,6 @@ import { getSession } from "../auth";
 import { createClient } from "../supabase/server";
 
 export async function updateName(formData: FormData) {
-    console.log("updateName");
     const session = await getSession();
     if (!session || !session.teamId) {
         throw new Error("Unauthorized");
@@ -19,7 +18,5 @@ export async function updateName(formData: FormData) {
         .update({ given_name: newName })
         .eq("id", session.teamId);
 
-    console.log({ data, error, status });
-    // revalidatePath("/team");
-    // return data;
+    revalidatePath("/team");
 }

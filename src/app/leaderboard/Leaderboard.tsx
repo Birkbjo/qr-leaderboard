@@ -52,7 +52,7 @@ export default function Leaderboard({ teamsPromise }: LeaderboardProps) {
             }
         }, 5000);
     }, [refresh]);
-    console.log({ teams });
+  
     return (
         <div className="container mx-auto py-10">
             {/* <Refresh /> */}
